@@ -1,3 +1,6 @@
 [submodule "busybox"]
 	path = busybox
 	url = https://github.com/thomas-coding/busybox.git
+[submodule "linux"]
+	path = linux
+	url = https://github.com/thomas-coding/linux.git
