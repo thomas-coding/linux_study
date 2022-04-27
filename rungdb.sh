@@ -10,5 +10,6 @@ export PATH="/root/workspace/.toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-li
 arm-none-linux-gnueabihf-gdb \
 -ex 'target remote localhost:1234' \
 -ex "add-symbol-file ${shell_folder}/linux/vmlinux" \
+-ex "add-symbol-file ${shell_folder}/linux/arch/arm/boot/compressed/vmlinux 0x60010000" \
 -q
  
