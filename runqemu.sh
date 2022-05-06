@@ -18,7 +18,10 @@ qemu_option+=" -kernel ${shell_folder}/linux/arch/arm/boot/zImage"
 qemu_option+=" -dtb ${shell_folder}/linux/arch/arm/boot/dts/vexpress-v2p-ca9.dtb"
 qemu_option+=" -sd ${shell_folder}/rootfs.ext3"
 qemu_option+=" -nographic"
-qemu_option+=" -d guest_errors"
+#qemu_option+=" -d guest_errors"
+qemu_option+=" -monitor telnet:127.0.0.1:65530,server,nowait"
+qemu_option+=" -append nokaslr"
+
 
 #gdb --args ../qemu_study/qemu/build/arm-softmmu/qemu-system-arm ${qemu_option} -append "console=ttyAMA0"
 gdb --args ${shell_folder}/qemu/build/arm-softmmu/qemu-system-arm ${qemu_option} -append "root=/dev/mmcblk0 rw console=ttyAMA0"

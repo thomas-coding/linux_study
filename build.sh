@@ -13,13 +13,14 @@ cmd_help() {
 	echo "$0 linux		---> make linux"
 	echo "$0 rootfs		---> make rootfs"
 	echo "$0 qemu		---> make qemu"
+	echo "$0 dump		---> dump vmlinux.asm"
 }
 
 build_rootfs() {
 	echo "Build rootfs"
 	# Build busybox
 	cd ${shell_folder}/busybox
-	make menuconfig # NOTE: only need run first time
+	#make menuconfig # NOTE: only need run first time, config setting -> build -> static lib and enable debug
 	make
 	make install
 
@@ -32,15 +33,26 @@ build_rootfs() {
 	mkdir -p ${shell_folder}/rootfs/lib
 	cp -r /root/workspace/.toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/arm-none-linux-gnueabihf/libc/lib/* ${shell_folder}/rootfs/lib
 
-	# Make dev dir
+	# Make dev dir, now used busybox mkdevs.sh to create dev dir
 	mkdir -p ${shell_folder}/rootfs/dev
 	cd ${shell_folder}/rootfs/dev
-	mknod -m 666 tty1 c 4 1
-	mknod -m 666 tty2 c 4 2
-	mknod -m 666 tty3 c 4 3
-	mknod -m 666 tty4 c 4 4
-	mknod -m 666 console c 5 1
-	mknod -m 666 null c 1 3
+	${shell_folder}/busybox/examples/bootfloppy/mkdevs.sh ${shell_folder}/rootfs/dev
+#	mknod -m 666 tty1 c 4 1
+#	mknod -m 666 tty2 c 4 2
+#	mknod -m 666 tty3 c 4 3
+#	mknod -m 666 tty4 c 4 4
+#	mknod -m 666 console c 5 1
+#	mknod -m 666 null c 1 3
+
+	# Make other dir
+	mkdir -p ${shell_folder}/rootfs/sys
+	mkdir -p ${shell_folder}/rootfs/proc
+	mkdir -p ${shell_folder}/rootfs/mnt
+	mkdir -p ${shell_folder}/rootfs/initrd
+
+	# copy etc
+	cp -r ${shell_folder}/busybox/examples/bootfloppy/etc ${shell_folder}/rootfs/
+	ln -s /proc/mounts ${shell_folder}/rootfs/etc/mtab
 
 	# Init SD card with ext3 file system
 	cd ${shell_folder}
@@ -68,7 +80,9 @@ if [[ $1  = "h" ]]; then
 	exit
 elif [[ $1  = "linux" ]]; then
 	cd ${shell_folder}/linux
-	make vexpress_defconfig
+	#make vexpress_defconfig
+	# NOTE: only need run first time, config Kernel hacking > Compile-time checks and compiler option > Compile the kernel with debug info
+	#make menuconfig
 	make
 	exit
 elif [[ $1  = "rootfs" ]]; then
@@ -78,6 +92,15 @@ elif [[ $1  = "qemu" ]]; then
 	cd ${shell_folder}/qemu
 	./configure --target-list=arm-softmmu --enable-debug
 	make
+	exit
+elif [[ $1  = "dump" ]]; then
+	cd ${shell_folder}/linux
+	rm -rf vmlinux.asm
+	arm-none-linux-gnueabihf-objdump -xd vmlinux > vmlinux.asm
+	arm-none-linux-gnueabihf-objdump -xd arch/arm/boot/compressed/vmlinux > arch/arm/boot/compressed/vmlinux.asm
+	cd ${shell_folder}/busybox
+	rm -rf busybox.asm
+	arm-none-linux-gnueabihf-objdump -xd busybox_unstripped > busybox.asm
 	exit
 else
 	echo "wrong args."
