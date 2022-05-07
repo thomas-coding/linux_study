@@ -7,3 +7,6 @@
 [submodule "qemu"]
 	path = qemu
 	url = https://github.com/thomas-coding/qemu.git
+[submodule "buildroot"]
+	path = buildroot
+	url = https://github.com/thomas-coding/buildroot.git
