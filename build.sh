@@ -4,6 +4,7 @@
 shell_folder=$(cd "$(dirname "$0")" || exit;pwd)
 
 export PATH="/root/workspace/.toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/:$PATH"
+export PATH="/home/cn1396/.toolchain/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/:$PATH"
 export ARCH=arm
 export CROSS_COMPILE=arm-none-linux-gnueabihf-
 
@@ -16,8 +17,8 @@ cmd_help() {
 	echo "$0 dump		---> dump vmlinux.asm"
 }
 
-build_rootfs() {
-	echo "Build rootfs"
+build_rootfs_busybox() {
+	echo "Build rootfs busybox"
 	# Build busybox
 	cd ${shell_folder}/busybox
 	#make menuconfig # NOTE: only need run first time, config setting -> build -> static lib and enable debug
@@ -79,14 +80,29 @@ if [[ $1  = "h" ]]; then
 	cmd_help
 	exit
 elif [[ $1  = "linux" ]]; then
+	start_time=${SECONDS}
 	cd ${shell_folder}/linux
-	#make vexpress_defconfig
+	make vexpress_defconfig
 	# NOTE: only need run first time, config Kernel hacking > Compile-time checks and compiler option > Compile the kernel with debug info
 	#make menuconfig
 	make
+	finish_time=${SECONDS}
+	duration=$((finish_time-start_time))
+	elapsed_time="$((duration / 60))m $((duration % 60))s"
+	echo -e  "Linux used:${elapsed_time}"
+	exit
+elif [[ $1  = "rootfs_busybox" ]]; then
+	build_rootfs_busybox
 	exit
 elif [[ $1  = "rootfs" ]]; then
-	build_rootfs
+	start_time=${SECONDS}
+	cd ${shell_folder}/buildroot
+	make qemu_arm_vexpress_defconfig
+	make
+	finish_time=${SECONDS}
+	duration=$((finish_time-start_time))
+	elapsed_time="$((duration / 60))m $((duration % 60))s"
+	echo -e  "Linux used:${elapsed_time}"
 	exit
 elif [[ $1  = "qemu" ]]; then
 	cd ${shell_folder}/qemu

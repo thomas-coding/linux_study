@@ -4,6 +4,7 @@
 shell_folder=$(cd "$(dirname "$0")" || exit;pwd)
 
 export PATH="/root/workspace/.toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/:$PATH"
+export PATH="/home/cn1396/.toolchain/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/:$PATH"
 
 # Linux kernel code maybe relocate, so you should modify symbol address for debug different part
 # 1. Debug startup of zimage
