@@ -83,7 +83,7 @@ elif [[ $1  = "linux" ]]; then
 	start_time=${SECONDS}
 	cd ${shell_folder}/linux
 	make vexpress_defconfig
-	# NOTE: only need run first time, config Kernel hacking > Compile-time checks and compiler option > Compile the kernel with debug info
+	# NOTE: only need run first time, config Kernel hacking > Compile-time checks and compiler option > Compile the kernel with debug info, set CONFIG_DEVTMPFS and CONFIG_DEVTMPFS_MOUNT
 	#make menuconfig
 	make
 	finish_time=${SECONDS}

@@ -16,7 +16,7 @@ fi
 qemu_option+=" -machine vexpress-a9"
 qemu_option+=" -kernel ${shell_folder}/linux/arch/arm/boot/zImage"
 qemu_option+=" -dtb ${shell_folder}/linux/arch/arm/boot/dts/vexpress-v2p-ca9.dtb"
-qemu_option+=" -sd ${shell_folder}/rootfs.ext3"
+qemu_option+=" -sd ${shell_folder}/buildroot/output/images/rootfs.ext2"
 qemu_option+=" -nographic"
 #qemu_option+=" -d guest_errors"
 qemu_option+=" -monitor telnet:127.0.0.1:65530,server,nowait"

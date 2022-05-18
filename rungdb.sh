@@ -38,5 +38,4 @@ export PATH="/home/cn1396/.toolchain/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-
 arm-none-linux-gnueabihf-gdb \
 -ex 'target remote localhost:1234' \
 -ex "add-symbol-file ${shell_folder}/linux/vmlinux" \
--ex "add-symbol-file ${shell_folder}/busybox/busybox_unstripped"
 -q
